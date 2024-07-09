@@ -18,17 +18,12 @@ class MyGame extends Phaser.Scene {
     for (let i = 0; i <= 9; i++) {
       this.load.image(String(i), `dist/assets/${i}.png`);
     }
-
-    this.load.image('background', 'dist/assets/bg.jpg');
   }
 
   create() {
     const gameWidth = this.cameras.main.width;
     const gameHeight = this.cameras.main.height;
     const padding = 140; // 画面端からの最小距離
-    const backgroundImage = this.add.tileSprite(0, 0, this.cameras.main.width, this.cameras.main.height, 'background');
-    
-    backgroundImage.setOrigin(0, 0);
   
     this.gameScale = gameWidth / 3 / this.textures.get('0').getSourceImage().width;
   
