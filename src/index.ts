@@ -4,20 +4,22 @@ class MyGame extends Phaser.Scene {
   private currentIndex: number;
   private images: Phaser.GameObjects.Image[];
   private velocities: Phaser.Math.Vector2[];
-  private gameScale: number; // 別の名前に変更
+  private gameScale: number;
+  private clickSound!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: 'main' });
     this.currentIndex = 0;
     this.images = [];
     this.velocities = [];
-    this.gameScale = 1; // 初期値を設定
+    this.gameScale = 1;
   }
 
   preload() {
     for (let i = 0; i <= 9; i++) {
       this.load.image(String(i), `dist/assets/${i}.png`);
     }
+    this.load.audio('clickSound', 'dist/assets/pui.mp3');
   }
 
   create() {
@@ -26,6 +28,8 @@ class MyGame extends Phaser.Scene {
     const padding = 140; // 画面端からの最小距離
   
     this.gameScale = gameWidth / 3 / this.textures.get('0').getSourceImage().width;
+
+    this.clickSound = this.sound.add('clickSound'); // サウンドオブジェクトを作成
   
     for (let i = 0; i <= 9; i++) {
       let randomX = Phaser.Math.Between(padding, gameWidth - padding);
@@ -44,6 +48,8 @@ class MyGame extends Phaser.Scene {
   
 
   handleClick() {
+    this.clickSound.play(); // クリック音を再生
+
     const currentImage = this.images[this.currentIndex];
     this.tweens.add({
       targets: currentImage,
@@ -85,14 +91,14 @@ class MyGame extends Phaser.Scene {
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  width: '100%', // 画面幅を100%に設定
-  height: '100%', // 画面高さを100%に設定
+  width: '100%',
+  height: '100%',
   scene: MyGame,
   parent: 'game',
   backgroundColor: '#FFDFE6',
   scale: {
-    mode: Phaser.Scale.RESIZE, // リサイズモードを設定
-    autoCenter: Phaser.Scale.CENTER_BOTH // 画面を中央に配置
+    mode: Phaser.Scale.RESIZE,
+    autoCenter: Phaser.Scale.CENTER_BOTH
   }
 };
 
