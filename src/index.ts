@@ -46,6 +46,8 @@ class MyGame extends Phaser.Scene {
       const velocity = new Phaser.Math.Vector2(Phaser.Math.Between(-200, 200), Phaser.Math.Between(-200, 200));
       this.velocities.push(velocity);
     }
+
+    this.scale.on('resize', this.handleResize, this);
   }
 
   handleClick() {
@@ -75,6 +77,25 @@ class MyGame extends Phaser.Scene {
           }
         });
       }
+    });
+  }
+
+  handleResize(gameSize: Phaser.Structs.Size) {
+    const width = gameSize.width;
+    const height = gameSize.height;
+    this.cameras.resize(width, height);
+
+    const gameWidth = this.cameras.main.width;
+    const gameHeight = this.cameras.main.height;
+    const padding = 140; // 画面端からの最小距離
+
+    this.gameScale = gameWidth / 3 / this.textures.get('0').getSourceImage().width;
+
+    this.images.forEach((image, index) => {
+      let randomX = Phaser.Math.Between(padding, gameWidth - padding);
+      let randomY = Phaser.Math.Between(padding, gameHeight - padding);
+      image.setPosition(randomX, randomY);
+      image.setScale(this.gameScale);
     });
   }
 
