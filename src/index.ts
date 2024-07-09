@@ -6,6 +6,7 @@ class MyGame extends Phaser.Scene {
   private velocities: Phaser.Math.Vector2[];
   private gameScale: number;
   private clickSound!: Phaser.Sound.BaseSound;
+  private isAnimating: boolean;
 
   constructor() {
     super({ key: 'main' });
@@ -13,6 +14,7 @@ class MyGame extends Phaser.Scene {
     this.images = [];
     this.velocities = [];
     this.gameScale = 1;
+    this.isAnimating = false;
   }
 
   preload() {
@@ -26,28 +28,30 @@ class MyGame extends Phaser.Scene {
     const gameWidth = this.cameras.main.width;
     const gameHeight = this.cameras.main.height;
     const padding = 140; // 画面端からの最小距離
-  
+
     this.gameScale = gameWidth / 3 / this.textures.get('0').getSourceImage().width;
 
     this.clickSound = this.sound.add('clickSound'); // サウンドオブジェクトを作成
-  
+
     for (let i = 0; i <= 9; i++) {
       let randomX = Phaser.Math.Between(padding, gameWidth - padding);
       let randomY = Phaser.Math.Between(padding, gameHeight - padding);
-  
+
       const image = this.add.image(randomX, randomY, String(i)).setScale(this.gameScale);
       image.setVisible(i === this.currentIndex);
       image.setInteractive();
       image.on('pointerdown', this.handleClick, this);
       this.images.push(image);
-  
+
       const velocity = new Phaser.Math.Vector2(Phaser.Math.Between(-200, 200), Phaser.Math.Between(-200, 200));
       this.velocities.push(velocity);
     }
   }
-  
 
   handleClick() {
+    if (this.isAnimating) return; // アニメーション中の場合は無視する
+
+    this.isAnimating = true;
     this.clickSound.play(); // クリック音を再生
 
     const currentImage = this.images[this.currentIndex];
@@ -65,7 +69,10 @@ class MyGame extends Phaser.Scene {
           targets: newImage,
           scale: { value: this.gameScale },
           duration: 200,
-          ease: 'Bounce.easeOut'
+          ease: 'Bounce.easeOut',
+          onComplete: () => {
+            this.isAnimating = false;
+          }
         });
       }
     });
