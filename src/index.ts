@@ -16,10 +16,10 @@ class MyGame extends Phaser.Scene {
 
   preload() {
     for (let i = 0; i <= 9; i++) {
-      this.load.image(String(i), `assets/${i}.png`);
+      this.load.image(String(i), `dist/assets/${i}.png`);
     }
 
-    this.load.image('background', 'assets/bg.jpg');
+    this.load.image('background', 'dist/assets/bg.jpg');
   }
 
   create() {
